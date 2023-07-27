@@ -1,0 +1,1 @@
+enum SampleItem { profile, logOut }
