@@ -5,13 +5,15 @@ import '../repositories/signup_services.dart';
 
 /// All Authentication Related ViewLogics
 class AuthViewModel extends ChangeNotifier {
+  bool? _isLoading;
+  bool get isLoading => _isLoading ?? false;
+  void setIsLoading(bool isloading) {
+    _isLoading = isloading;
+    notifyListeners();
+  }
+
   String? _token;
   String get token => _token ?? '';
-  // bool? _sucess;
-  // bool get sucess => _sucess ?? false;
-  // void setSucess(bool success) {
-  //   _sucess = null;
-  // }
 
   final storage = const FlutterSecureStorage();
 
