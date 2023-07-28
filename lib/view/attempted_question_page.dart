@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:onlineprep/view/quiz_completed_page.dart';
 import 'package:onlineprep/view/quiz_page.dart';
 import 'package:provider/provider.dart';
-
 import '../res/widgets/attempted_question_screen/topbar_container_attempted_screen.dart';
 import '../viewmodel/question_view_model.dart';
+import '../viewmodel/score_viewmodel.dart';
 import '../viewmodel/timer_provider.dart';
+import '../viewmodel/user_data_viewmodel.dart';
 
 class QuestionAtemptedScreen extends StatelessWidget {
   final int noOfQuestions;
@@ -101,13 +102,29 @@ class QuestionAtemptedScreen extends StatelessWidget {
         bottom: MediaQuery.of(context).size.height * 0.01,
         left: MediaQuery.of(context).size.width * 0.2,
         child: GestureDetector(
-          onTap: () {
-            context.read<TimerInfoProvider>().stopTimer();
-            context.read<TimerInfoProvider>().resetTimer();
-            Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => QuizCompletedPage(
-                      categoryName: categoryName,
-                    )));
+          onTap: () async {
+            context.read<ScoreViewModel>().setIsLoading(true);
+
+            Map data = {
+              "score":
+                  context.read<QuestionViewModel>().correctAnswers.toString(),
+              "category": categoryId,
+              "user": context.read<UserDataViewModel>().userId,
+              "username": context.read<UserDataViewModel>().name,
+              "categoryname": categoryName
+            };
+            bool setscoreSucess =
+                await context.read<ScoreViewModel>().setScore(data);
+            if (setscoreSucess && context.mounted) {
+              context.read<TimerInfoProvider>().stopTimer();
+              context.read<TimerInfoProvider>().resetTimer();
+
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  builder: (context) => QuizCompletedPage(
+                        categoryName: categoryName,
+                      )));
+              context.read<ScoreViewModel>().setIsLoading(false);
+            }
           },
           child: _submitButtonContainer(context),
         ));
@@ -120,11 +137,13 @@ class QuestionAtemptedScreen extends StatelessWidget {
           color: Colors.green.shade600,
           borderRadius: BorderRadius.circular(20)),
       width: MediaQuery.of(context).size.width * 0.7,
-      child: const Center(
-          child: Text(
-        "Submit",
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-      )),
+      child: Center(
+          child: context.read<ScoreViewModel>().isLoading
+              ? const CircularProgressIndicator()
+              : const Text(
+                  "Submit",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                )),
     );
   }
 }
