@@ -8,4 +8,5 @@ class AppUrl {
   static const String loginUrl = "http://10.20.30.57:3001/api/v1/auth/login";
   static const String userdata = 'http://10.20.30.57:3001/api/v1/auth/me';
   static const String signUP = "http://10.20.30.57:3001/api/v1/auth/register";
+  static const String score = "http://10.20.30.57:3001/api/v1/scores";
 }
