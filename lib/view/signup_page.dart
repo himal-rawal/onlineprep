@@ -45,6 +45,7 @@ class _SignUpPageState extends State<SignUpPage> {
               const SizedBox(height: 50),
               GestureDetector(
                 onTap: () async {
+                  context.read<AuthViewModel>().setIsLoading(true);
                   await _signUpApiCall(context);
                 },
                 child: _signUpButton(context),
@@ -116,11 +117,13 @@ class _SignUpPageState extends State<SignUpPage> {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           color: const Color(0xFFF969798)),
-      child: const Center(
-          child: Text(
-        "SIGN UP",
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-      )),
+      child: Center(
+          child: context.watch<AuthViewModel>().isLoading
+              ? const CircularProgressIndicator()
+              : const Text(
+                  "SIGN UP",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                )),
     );
   }
 
@@ -132,11 +135,9 @@ class _SignUpPageState extends State<SignUpPage> {
 
     bool isSignup = await context.read<AuthViewModel>().signUp(data) ?? false;
     if (isSignup == true && context.mounted) {
-      // context.read<UserDataViewModel>().userId.isEmpty
-      //     ? context.read<UserDataViewModel>().getUserdata()
-      //     : null;
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: ((context) => const LoginPage())));
+      context.read<AuthViewModel>().setIsLoading(false);
     } else {
       //context.read<AuthViewModel>().setSucess(false);
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -145,6 +146,7 @@ class _SignUpPageState extends State<SignUpPage> {
             'incoorect data provided',
             style: TextStyle(color: Color(0xff03dac6)),
           )));
+      context.read<AuthViewModel>().setIsLoading(false);
     }
   }
 }
