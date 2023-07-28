@@ -89,6 +89,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _loginApiCall(BuildContext context) async {
+    context.read<AuthViewModel>().setIsLoading(true);
     String email = _emailController.text;
     String password = _passwordController.text;
     bool islogin =
@@ -99,6 +100,7 @@ class _LoginPageState extends State<LoginPage> {
       //     : null;
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: ((context) => const SignInDetector())));
+      context.read<AuthViewModel>().setIsLoading(false);
     } else {
       //context.read<AuthViewModel>().setSucess(false);
       if (context.mounted) {
@@ -108,6 +110,7 @@ class _LoginPageState extends State<LoginPage> {
               'Incorrect Username or Password',
               style: TextStyle(color: Color(0xff03dac6)),
             )));
+        context.read<AuthViewModel>().setIsLoading(false);
       }
     }
   }
@@ -119,11 +122,13 @@ class _LoginPageState extends State<LoginPage> {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           color: const Color(0xfff969798)),
-      child: const Center(
-          child: Text(
-        "SIGN IN",
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-      )),
+      child: Center(
+          child: context.watch<AuthViewModel>().isLoading
+              ? const CircularProgressIndicator()
+              : const Text(
+                  "SIGN IN",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                )),
     );
   }
 }
