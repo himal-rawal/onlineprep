@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import '../modal/questions.dart';
 import '../res/widgets/quiz_page_widgets/topbar_container_quiz_page.dart';
 import '../viewmodel/question_view_model.dart';
+import '../viewmodel/score_viewmodel.dart';
+import '../viewmodel/user_data_viewmodel.dart';
 
 class QuizScreenPage extends StatelessWidget {
   final String? category;
@@ -168,20 +170,38 @@ class QuizScreenPage extends StatelessWidget {
   }
 
   GestureDetector _submitButton(
-      BuildContext context, categoryname, List<Result> data) {
+      BuildContext context, String categoryname, List<Result> data) {
     return GestureDetector(
-        onTap: () {
-          context.read<TimerInfoProvider>().stopTimer();
-          context.read<TimerInfoProvider>().resetTimer();
-          Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (context) => QuizCompletedPage(
-                    categoryName: categoryname,
-                  )));
+        onTap: () async {
+          context.read<ScoreViewModel>().setIsLoading(true);
+          //await Future.delayed(Duration(seconds: 10));
+          Map data = {
+            "score":
+                context.read<QuestionViewModel>().correctAnswers.toString(),
+            "category": category,
+            "user": context.read<UserDataViewModel>().userId,
+            "username": context.read<UserDataViewModel>().name,
+            "categoryname": categoryname
+          };
+
+          bool setscoreSucess =
+              await context.read<ScoreViewModel>().setScore(data);
+          if (setscoreSucess && context.mounted) {
+            context.read<TimerInfoProvider>().stopTimer();
+            context.read<TimerInfoProvider>().resetTimer();
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => QuizCompletedPage(
+                      categoryName: categoryname,
+                    )));
+            context.read<ScoreViewModel>().setIsLoading(false);
+          }
         },
-        child: const Text(
-          "Submit",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-        ));
+        child: context.watch<ScoreViewModel>().isLoading
+            ? const CircularProgressIndicator()
+            : const Text(
+                "Submit",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+              ));
   }
 
   GestureDetector _navigateBeforeIcon(QuestionViewModel questionViewModel,
