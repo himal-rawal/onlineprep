@@ -20,7 +20,7 @@ class PostScoreResponse {
 }
 
 class Data {
-  int? score;
+  String? score;
   String? sId;
   String? category;
   String? user;
