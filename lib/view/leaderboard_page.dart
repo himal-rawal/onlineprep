@@ -16,7 +16,7 @@ class LeaderBoardPage extends StatelessWidget {
           _sliverAppBar(context),
           SliverToBoxAdapter(
             child: Container(
-              padding: EdgeInsets.all(30),
+              padding: const EdgeInsets.all(30),
               child: DropdownButton<String>(
                 //dropdownColor: const Color.fromARGB(255, 87, 172, 242),
                 value: context.watch<ScoreViewModel>().selectedDropdownValue,
@@ -37,12 +37,12 @@ class LeaderBoardPage extends StatelessWidget {
                 },
                 items: context
                     .read<QuestionCategoriesViewModeel>()
-                    .nameOfCategories
+                    .allCategories
                     .map<DropdownMenuItem<String>>((value) {
                   return DropdownMenuItem<String>(
-                    value: value,
+                    value: value.id,
                     child: Text(
-                      value,
+                      value.title ?? "",
                       softWrap: false,
                       maxLines: 1,
                     ),

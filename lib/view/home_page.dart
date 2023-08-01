@@ -27,7 +27,7 @@ FutureBuilder<List<Categories>> _fetchAllCategoriesFromApi(
       future: context.read<QuestionCategoriesViewModeel>().getAllCategories(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return const Text("Got some error");
+          return Text(snapshot.error.toString());
         } else if (snapshot.hasData) {
           final categoryData = snapshot.data;
           if (categoryData == null) {

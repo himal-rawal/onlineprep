@@ -8,6 +8,7 @@ import 'package:onlineprep/viewmodel/checklogeedin.dart';
 import 'package:onlineprep/viewmodel/auth_viewmodel.dart';
 import 'package:onlineprep/viewmodel/question_categories_viewmodel.dart';
 import 'package:onlineprep/viewmodel/question_view_model.dart';
+import 'package:onlineprep/viewmodel/score_history_viewmodel.dart';
 import 'package:onlineprep/viewmodel/score_viewmodel.dart';
 import 'package:onlineprep/viewmodel/timer_provider.dart';
 import 'package:onlineprep/viewmodel/user_data_viewmodel.dart';
@@ -48,7 +49,9 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider<UserDataViewModel>(
               create: (_) => UserDataViewModel()),
           ChangeNotifierProvider<ScoreViewModel>(
-              create: (_) => ScoreViewModel())
+              create: (_) => ScoreViewModel()),
+          ChangeNotifierProvider<ScoreHistoryViewModel>(
+              create: (_) => ScoreHistoryViewModel())
         ],
         child: MaterialApp(
           title: 'Flutter Demo',
